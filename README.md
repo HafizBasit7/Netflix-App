@@ -1,3 +1,10 @@
+# 🎬 Netflix Clone (React Native + TMDB API)
+
+A sleek and responsive **Netflix Clone App** built with **React Native**, powered by the [**TMDB API**](https://developer.themoviedb.org/).  
+Browse movies, view details, search, explore similar titles, and manage your favorites — all in a modern UI inspired by Netflix.
+
+---
+
 ## 📱 App Screenshots
 
 <table>
@@ -28,97 +35,94 @@
       <img src="./screenshots/7.jpg" width="250" alt="My Favourites"/>
       <br><b>My Favourites</b>
     </td>
-     <td align="center">
+  </tr>
+  <tr>
+    <td align="center">
       <img src="./screenshots/8.jpg" width="250" alt="Settings Screen"/>
       <br><b>Settings Screen</b>
     </td>
-     <td align="center">
+    <td align="center">
       <img src="./screenshots/3.jpg" width="250" alt="Light Theme"/>
       <br><b>Light Theme</b>
+    </td>
+    <td align="center">
+      <img src="./screenshots/9.jpg" width="250" alt="Extra Screen"/>
+      <br><b>Extra Screen</b>
     </td>
   </tr>
 </table>
 
 
+---
 
+## ⚙️ Features
 
+- 🎞 Browse Trending and Popular Movies  
+- 🔍 Search for Movies by Title  
+- 📄 Detailed Movie Info and Cast  
+- 💾 Add to Favorites List  
+- 🌗 Light and Dark Mode Support  
+- ⚡ Powered by [TMDB API](https://developer.themoviedb.org/)  
 
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+---
 
-# Getting Started
+## 🚀 Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note:** Make sure you’ve completed the [React Native Environment Setup](https://reactnative.dev/docs/environment-setup) before proceeding.
 
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
+### 1️⃣ Start the Metro Server
 
 ```bash
-# using npm
+# Using npm
 npm start
 
 # OR using Yarn
 yarn start
-```
 
-## Step 2: Start your Application
+2️⃣ Run the App
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+Keep Metro Bundler running, then open a new terminal and run:
 
-### For Android
-
-```bash
-# using npm
+For Android
 npm run android
-
-# OR using Yarn
+# OR
 yarn android
-```
 
-### For iOS
-
-```bash
-# using npm
+For iOS
 npm run ios
-
-# OR using Yarn
+# OR
 yarn ios
-```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+🧩 Tech Stack
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+React Native
 
-## Step 3: Modifying your App
+TMDB API
 
-Now that you have successfully run the app, let's modify it.
+React Navigation
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+Axios
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+AsyncStorage
 
-## Congratulations! :tada:
+React Native Vector Icons
 
-You've successfully run and modified your React Native App. :partying_face:
+🧠 Learn More
 
-### Now what?
+React Native Docs
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+TMDB Developer Docs
 
-# Troubleshooting
+React Navigation
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+📝 License
 
-# Learn More
+This project is for educational and personal use only.
+Movie data and images are provided by The Movie Database (TMDB).
 
-To learn more about React Native, take a look at the following resources:
+💡 Author
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Developed with ❤️ by Hafiz Basit Khan
+
+
+---
