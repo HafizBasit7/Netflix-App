@@ -1,3 +1,48 @@
+## 📱 App Screenshots
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/1.jpg" width="250" alt="Splash Screen"/>
+      <br><b>Splash Screen</b>
+    </td>
+    <td align="center">
+      <img src="./screenshots/2.jpg" width="250" alt="Home Screen"/>
+      <br><b>Home Screen</b>
+    </td>
+    <td align="center">
+      <img src="./screenshots/4.jpg" width="250" alt="Details Screen"/>
+      <br><b>Details Screen</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/5.jpg" width="250" alt="Similar List Screen"/>
+      <br><b>Similar List Screen</b>
+    </td>
+    <td align="center">
+      <img src="./screenshots/6.jpg" width="250" alt="Search Screen"/>
+      <br><b>Search Screen</b>
+    </td>
+    <td align="center">
+      <img src="./screenshots/7.jpg" width="250" alt="My Favourites"/>
+      <br><b>My Favourites</b>
+    </td>
+     <td align="center">
+      <img src="./screenshots/8.jpg" width="250" alt="Settings Screen"/>
+      <br><b>Settings Screen</b>
+    </td>
+     <td align="center">
+      <img src="./screenshots/3.jpg" width="250" alt="Light Theme"/>
+      <br><b>Light Theme</b>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
