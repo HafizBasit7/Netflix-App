@@ -80,7 +80,6 @@ const DetailsScreen = ({ route, navigation }: any) => {
       
       await Share.share({
         message: shareMessage,
-        // url: `https://www.themoviedb.org/movie/${movie.id}`, // Remove this line
         title: `Share ${movie.title}`,
       });
     } catch (error) {
@@ -429,10 +428,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: NetflixColors.primary,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    paddingHorizontal: 16, 
+    paddingVertical: 10,   
     borderRadius: NetflixMetrics.borderRadius,
-    flex: 1,
+    flex: 0.7,            
     marginRight: NetflixMetrics.margin,
     justifyContent: 'center',
   },
@@ -442,19 +441,20 @@ const styles = StyleSheet.create({
   },
   playButtonText: {
     color: NetflixColors.text,
-    fontSize: 16,
+    fontSize: 14,          
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginLeft: 6,         
     fontFamily: NetflixFonts.bold,
   },
   iconButton: {
     alignItems: 'center',
-    padding: NetflixMetrics.padding,
-    minWidth: 60,
+    padding: 8,            
+    minWidth: 50,          
+    flex: 0.15,            
   },
   iconButtonText: {
     color: NetflixColors.text,
-    fontSize: 12,
+    fontSize: 12,          
     marginTop: 4,
     fontFamily: NetflixFonts.regular,
   },

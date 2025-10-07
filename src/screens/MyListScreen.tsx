@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -29,10 +30,17 @@ const MyListScreen = ({ navigation }: any) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const isFocused = useIsFocused(); 
 
+//   useEffect(() => {
+//     loadFavorites();
+//   }, []);
   useEffect(() => {
-    loadFavorites();
-  }, []);
+    if (isFocused) {
+      loadFavorites();
+    }
+  }, [isFocused]); // Reload when screen comes into focus
+
 
   useEffect(() => {
     if (favorites.length > 0) {
@@ -47,10 +55,12 @@ const MyListScreen = ({ navigation }: any) => {
   const loadFavorites = async () => {
     try {
       const favoriteMovies = await FavoritesService.getFavorites();
-      setFavorites(favoriteMovies.reverse());
+      // Fix: Check if favoriteMovies exists before calling reverse()
+      setFavorites(favoriteMovies ? favoriteMovies.reverse() : []);
     } catch (error) {
       console.error('Error loading favorites:', error);
       Alert.alert('Error', 'Failed to load your favorites');
+      setFavorites([]); // Ensure favorites is always an array
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -261,7 +271,7 @@ const MyListScreen = ({ navigation }: any) => {
           activeOpacity={0.7}
         >
           <LinearGradient
-            colors={[NetflixColors.primary]}
+            colors={[NetflixColors.primary, '#1a1a1a']}
             style={styles.browseButtonGradient}
           >
             <Icon name="film" size={20} color={NetflixColors.text} />

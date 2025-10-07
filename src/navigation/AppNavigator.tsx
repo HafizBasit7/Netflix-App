@@ -44,9 +44,11 @@ const TabNavigator = () => {
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopColor: colors.cardBackground,
+          
         },
         headerStyle: {
           backgroundColor: colors.background,
+          
         },
         headerTintColor: colors.text,
         headerTitleStyle: {

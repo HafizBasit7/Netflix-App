@@ -145,10 +145,10 @@ const HomeScreen = ({ navigation }: any) => {
           colors={['transparent', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.8)']}
           style={styles.featuredGradient}
         >
-          <Text style={[styles.featuredTitle, { color: colors.text }]}>
+          <Text style={styles.featuredTitle}>
             {trending[currentFeaturedIndex].title}
           </Text>
-          <Text style={[styles.featuredOverview, { color: colors.text }]} numberOfLines={3}>
+          <Text style={styles.featuredOverview} numberOfLines={3}>
             {trending[currentFeaturedIndex].overview}
           </Text>
           
@@ -159,8 +159,8 @@ const HomeScreen = ({ navigation }: any) => {
               movieId: trending[currentFeaturedIndex].id 
             })}
           >
-            <Icon name="play" size={20} color={colors.text} />
-            <Text style={[styles.playButtonText, { color: colors.text }]}>Play</Text>
+            <Icon name="play" size={20}  />
+            <Text style={styles.playButtonText}>Play</Text>
           </TouchableOpacity>
         </LinearGradient>
       </TouchableOpacity>
@@ -191,13 +191,13 @@ const HomeScreen = ({ navigation }: any) => {
             style={[styles.navArrow, styles.leftArrow]}
             onPress={prevFeatured}
           >
-            <Icon name="chevron-back" size={24} color={colors.text} />
+            <Icon name="chevron-back" size={24} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.navArrow, styles.rightArrow]}
             onPress={nextFeatured}
           >
-            <Icon name="chevron-forward" size={24} color={colors.text} />
+            <Icon name="chevron-forward" size={24} />
           </TouchableOpacity>
         </>
       )}
