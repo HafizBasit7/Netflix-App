@@ -45,10 +45,6 @@ Browse movies, view details, search, explore similar titles, and manage your fav
       <img src="./screenshots/3.jpg" width="250" alt="Light Theme"/>
       <br><b>Light Theme</b>
     </td>
-    <td align="center">
-      <img src="./screenshots/9.jpg" width="250" alt="Extra Screen"/>
-      <br><b>Extra Screen</b>
-    </td>
   </tr>
 </table>
 
