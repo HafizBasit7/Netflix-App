@@ -11,15 +11,18 @@ import SearchScreen from '../screens/SearchScreen';
 import MyListScreen from '../screens/MyListScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DetailsScreen from '../screens/DetailsScreen';
+import LoginScreen from '../screens/LoginScreen';
+import SignUpScreen from '../screens/SignUpScreen';
 
-// Theme
-import { useTheme } from '../theme/ThemeProvider'; // Adjust import path as needed
+// Context
+import { useTheme } from '../theme/ThemeProvider';
+import { useAuth } from '../context/AuthContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-  const { colors, isDarkMode } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <Tab.Navigator
@@ -44,18 +47,15 @@ const TabNavigator = () => {
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopColor: colors.cardBackground,
-          
         },
         headerStyle: {
           backgroundColor: colors.background,
-          
         },
         headerTintColor: colors.text,
         headerTitleStyle: {
           fontWeight: 'bold',
           color: colors.text,
         },
-        
         headerShadowVisible: true,
         headerTitleAlign: 'center',
       })}
@@ -84,6 +84,74 @@ const TabNavigator = () => {
   );
 };
 
+// Single Stack Navigator that handles both auth and main flows
+const RootStack = () => {
+  const { colors } = useTheme();
+  const { user, loading } = useAuth();
+
+  // Show splash screen while checking authentication
+  if (loading) {
+    return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Splash" component={SplashScreen} />
+      </Stack.Navigator>
+    );
+  }
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTintColor: colors.text,
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          color: colors.text,
+        },
+        headerTitleAlign: 'center',
+        cardStyle: {
+          backgroundColor: colors.background,
+        },
+      }}
+    >
+      {user ? (
+        // Authenticated user flow
+        <>
+          <Stack.Screen 
+            name="MainTabs" 
+            component={TabNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen 
+            name="Details" 
+            component={DetailsScreen}
+            options={({ route }: any) => ({ 
+              title: route.params?.movieTitle || 'Movie Details',
+              headerBackTitle: 'Back',
+              headerShown: true,
+            })}
+          />
+        </>
+      ) : (
+        // Unauthenticated user flow
+        <>
+          <Stack.Screen 
+            name="Login" 
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen 
+            name="SignUp" 
+            component={SignUpScreen}
+            options={{ headerShown: false }}
+          />
+        </>
+      )}
+    </Stack.Navigator>
+  );
+};
+
 const AppNavigator = () => {
   const { colors, isDarkMode } = useTheme();
 
@@ -96,54 +164,12 @@ const AppNavigator = () => {
           background: colors.background,
           card: colors.cardBackground || colors.background,
           text: colors.text,
-          border: colors.border || colors.cardBackground,
+          border: colors.cardBackground,
           notification: colors.primary,
         },
       }}
     >
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: colors.background,
-          },
-          headerTintColor: colors.text,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            color: colors.text,
-          },
-          
-          gestureEnabled: false,
-          
-          headerTitleAlign: 'center',
-          cardStyle: {
-            backgroundColor: colors.background,
-          },
-        }}
-      >
-        <Stack.Screen 
-          name="Splash" 
-          component={SplashScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen 
-          name="Main" 
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen 
-          name="Details" 
-          component={DetailsScreen}
-          options={({ route }: any) => ({ 
-            title: route.params?.movieTitle || 'Movie Details',
-            headerBackTitle: 'Back',
-            headerShown: false, 
-            headerStyle: {
-              backgroundColor: colors.background,
-            },
-            headerTintColor: colors.text,
-          })}
-        />
-      </Stack.Navigator>
+      <RootStack />
     </NavigationContainer>
   );
 };
