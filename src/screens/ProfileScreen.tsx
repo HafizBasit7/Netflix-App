@@ -245,10 +245,12 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-na
 import { useTheme } from '../theme/ThemeProvider';
 import { useAuth } from '../context/AuthContext';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileScreen: React.FC = () => {
   const { colors } = useTheme();
   const { user, signOut } = useAuth();
+  const navigation = useNavigation();
 
   const defaultProfileImage = require('../assets/images/profile.png');
 
@@ -258,8 +260,8 @@ const ProfileScreen: React.FC = () => {
       'Are you sure you want to logout?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Logout', 
+        {
+          text: 'Logout',
           style: 'destructive',
           onPress: async () => {
             await signOut();
@@ -282,21 +284,32 @@ const ProfileScreen: React.FC = () => {
           {/* <Text style={styles.avatarText}>
             {user?.email?.charAt(0).toUpperCase() || 'U'}
           </Text> */}
-           <Image 
-                  source={defaultProfileImage}
-                  style={styles.avatarImage}
-                  resizeMode="cover"
-                />
+          <Image
+            source={defaultProfileImage}
+            style={styles.avatarImage}
+            resizeMode="cover"
+          />
         </View>
         <Text style={styles.email}>{user?.email}</Text>
       </View>
 
       <View style={styles.menuSection}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Subscription')}
+          style={styles.menuItem}
+        >
+          <Icon name="card-outline" size={24} color={colors.text} />
+          <Text style={styles.menuText}>Plan Subscription</Text>
+          <Icon name="chevron-forward" size={20} color={colors.textMuted} />
+        </TouchableOpacity>
+
+
         <TouchableOpacity style={styles.menuItem}>
           <Icon name="person-outline" size={24} color={colors.text} />
           <Text style={styles.menuText}>Account Settings</Text>
           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
         </TouchableOpacity>
+
 
         <TouchableOpacity style={styles.menuItem}>
           <Icon name="notifications-outline" size={24} color={colors.text} />
@@ -316,7 +329,7 @@ const ProfileScreen: React.FC = () => {
           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.menuItem, styles.logoutItem]}
           onPress={handleLogout}
         >
@@ -394,7 +407,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginLeft: 15,
     fontWeight: '600',
   },
-    avatarImage: {
+  avatarImage: {
     width: '100%',
     height: '100%',
     borderRadius: 60,

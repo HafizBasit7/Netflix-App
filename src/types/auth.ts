@@ -1,9 +1,9 @@
 // User related types
-export interface User {
-    id: string;
-    email: string;
-    watchlist: WatchlistItem[];
-  }
+// export interface User {
+//     id: string;
+//     email: string;
+//     watchlist: WatchlistItem[];
+//   }
   
   export interface WatchlistItem {
     movieId: number;
@@ -14,13 +14,13 @@ export interface User {
   }
   
   // Authentication response types
-  export interface AuthResponse {
-    success: boolean;
-    message: string;
-    token?: string;
-    user?: User;
-    expiresIn?: string;
-  }
+  // export interface AuthResponse {
+  //   success: boolean;
+  //   message: string;
+  //   token?: string;
+  //   user?: User;
+  //   expiresIn?: string;
+  // }
   
   // Credential types
   export interface LoginCredentials {
@@ -36,6 +36,7 @@ export interface User {
   // Auth Context types
   export interface AuthContextType {
     user: User | null;
+    userSubscription: UserSubscription | null;
     loading: boolean;
     authLoading: boolean;
     error: string | null;
@@ -43,7 +44,11 @@ export interface User {
     signIn: (credentials: LoginCredentials) => Promise<AuthResponse>;
     signOut: () => Promise<{ success: boolean }>;
     clearError: () => void;
+    refreshUserSubscription: () => Promise<void>;
+    completeSubscription: (subscriptionId: string) => Promise<void>;
+    createSubscriptionPayment: (priceId: string) => Promise<{ clientSecret: string; subscriptionId: string }>;
     isAuthenticated: boolean;
+    hasActiveSubscription: boolean;
   }
   
   // API Error types
@@ -62,4 +67,45 @@ export interface User {
     getToken: () => Promise<string | null>;
     isAuthenticated: () => Promise<boolean>;
     testConnection: () => Promise<boolean>;
+  }
+
+  export interface SubscriptionPlan {
+    id: string;
+    name: string;
+    price: number;
+    currency: string;
+    interval: 'month' | 'year';
+    features: string[];
+    stripePriceId?: string;
+    isFree: boolean;
+  }
+  
+  export interface UserSubscription {
+    id: string;
+    planId: string;
+    status: 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing';
+    currentPeriodEnd: string;
+    cancelAtPeriodEnd: boolean;
+    stripeSubscriptionId?: string;
+  }
+  
+  export interface User {
+    id: string;
+    email: string;
+    subscription?: UserSubscription;
+    hasActiveSubscription: boolean;
+    watchlist: WatchlistItem[];
+  }
+  
+  export interface PaymentIntent {
+    clientSecret: string;
+    subscriptionId?: string;
+  }
+  
+  export interface AuthResponse {
+    success: boolean;
+    message: string;
+    user?: User;
+    token?: string;
+    requiresSubscription?: boolean;
   }

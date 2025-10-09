@@ -13,6 +13,8 @@ import ProfileScreen from '../screens/ProfileScreen';
 import DetailsScreen from '../screens/DetailsScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import SubscriptionScreen from '../screens/SubscriptionScreen';
+import PaymentScreen from '../screens/PaymentScreen';
 
 // Context
 import { useTheme } from '../theme/ThemeProvider';
@@ -28,7 +30,7 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+          let iconName: string = '';
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
@@ -84,12 +86,10 @@ const TabNavigator = () => {
   );
 };
 
-// Single Stack Navigator that handles both auth and main flows
 const RootStack = () => {
   const { colors } = useTheme();
   const { user, loading } = useAuth();
 
-  // Show splash screen while checking authentication
   if (loading) {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -113,10 +113,11 @@ const RootStack = () => {
         cardStyle: {
           backgroundColor: colors.background,
         },
+        headerBackTitle: 'Back',
       }}
     >
+      {/* Authenticated user */}
       {user ? (
-        // Authenticated user flow
         <>
           <Stack.Screen 
             name="MainTabs" 
@@ -128,13 +129,29 @@ const RootStack = () => {
             component={DetailsScreen}
             options={({ route }: any) => ({ 
               title: route.params?.movieTitle || 'Movie Details',
-              headerBackTitle: 'Back',
               headerShown: true,
             })}
           />
+          {/* Subscription-related routes are now always available */}
+          <Stack.Screen 
+            name="Subscription" 
+            component={SubscriptionScreen}
+            options={{ 
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+          />
+          <Stack.Screen 
+            name="Payment" 
+            component={PaymentScreen}
+            options={{ 
+              title: 'Payment',
+              headerShown: false,
+            }}
+          />
         </>
       ) : (
-        // Unauthenticated user flow
+        // Unauthenticated user
         <>
           <Stack.Screen 
             name="Login" 

@@ -7,7 +7,7 @@ import { AuthResponse, User } from '../types/auth';
 //   ? 'http://localhost:5000/api'  // Development - Android emulator
 //   : 'https://your-production-url.com/api'; // Production
 
-  const API_BASE_URL = 'http://192.168.1.59:5000/api';
+  const API_BASE_URL = 'http://192.168.18.24:5000/api';
   
 // Create axios instance with default config
 const api: AxiosInstance = axios.create({
