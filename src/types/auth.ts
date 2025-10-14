@@ -49,6 +49,8 @@
     createSubscriptionPayment: (priceId: string) => Promise<{ clientSecret: string; subscriptionId: string }>;
     isAuthenticated: boolean;
     hasActiveSubscription: boolean;
+    uploadProfileImage: (imageData: string) => Promise<void>;
+  deleteProfileImage: () => Promise<void>;
   }
   
   // API Error types
@@ -90,8 +92,10 @@
   }
   
   export interface User {
+    name?: string;
     id: string;
     email: string;
+    profileImage?: string,
     subscription?: UserSubscription;
     hasActiveSubscription: boolean;
     watchlist: WatchlistItem[];

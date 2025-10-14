@@ -240,19 +240,214 @@
 // export default ProfileScreen;
 
 
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+// import React from 'react';
+// import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+// import { useTheme } from '../theme/ThemeProvider';
+// import { useAuth } from '../context/AuthContext';
+// import Icon from 'react-native-vector-icons/Ionicons';
+// import { useNavigation } from '@react-navigation/native';
+
+// const ProfileScreen: React.FC = () => {
+//   const { colors } = useTheme();
+//   const { user, signOut } = useAuth();
+//   const navigation = useNavigation();
+
+//   const defaultProfileImage = require('../assets/images/profile.png');
+
+//   const handleLogout = () => {
+//     Alert.alert(
+//       'Logout',
+//       'Are you sure you want to logout?',
+//       [
+//         { text: 'Cancel', style: 'cancel' },
+//         {
+//           text: 'Logout',
+//           style: 'destructive',
+//           onPress: async () => {
+//             await signOut();
+//           }
+//         }
+//       ]
+//     );
+//   };
+
+//   const styles = createStyles(colors);
+
+//   return (
+//     <View style={styles.container}>
+//       <View style={styles.header}>
+//         <Text style={styles.title}>Profile</Text>
+//       </View>
+
+//       <View style={styles.profileSection}>
+//         <View style={styles.avatar}>
+//           {/* <Text style={styles.avatarText}>
+//             {user?.email?.charAt(0).toUpperCase() || 'U'}
+//           </Text> */}
+//           <Image
+//             source={defaultProfileImage}
+//             style={styles.avatarImage}
+//             resizeMode="cover"
+//           />
+//         </View>
+//         <Text style={styles.email}>{user?.email}</Text>
+//       </View>
+
+//       <View style={styles.menuSection}>
+//         <TouchableOpacity
+//           onPress={() => navigation.navigate('Subscription')}
+//           style={styles.menuItem}
+//         >
+//           <Icon name="card-outline" size={24} color={colors.text} />
+//           <Text style={styles.menuText}>Plan Subscription</Text>
+//           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
+//         </TouchableOpacity>
+
+
+//         <TouchableOpacity style={styles.menuItem}>
+//           <Icon name="person-outline" size={24} color={colors.text} />
+//           <Text style={styles.menuText}>Account Settings</Text>
+//           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
+//         </TouchableOpacity>
+
+
+//         <TouchableOpacity style={styles.menuItem}>
+//           <Icon name="notifications-outline" size={24} color={colors.text} />
+//           <Text style={styles.menuText}>Notifications</Text>
+//           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={styles.menuItem}>
+//           <Icon name="lock-closed-outline" size={24} color={colors.text} />
+//           <Text style={styles.menuText}>Privacy & Security</Text>
+//           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={styles.menuItem}>
+//           <Icon name="help-circle-outline" size={24} color={colors.text} />
+//           <Text style={styles.menuText}>Help & Support</Text>
+//           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
+//         </TouchableOpacity>
+
+//         <TouchableOpacity
+//           style={[styles.menuItem, styles.logoutItem]}
+//           onPress={handleLogout}
+//         >
+//           <Icon name="log-out-outline" size={24} color="#e50914" />
+//           <Text style={styles.logoutText}>Logout</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+// };
+
+// const createStyles = (colors: any) => StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: colors.background,
+//   },
+//   header: {
+//     padding: 20,
+//     paddingTop: 60,
+//     alignItems: 'center',
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     color: colors.text,
+//   },
+//   profileSection: {
+//     alignItems: 'center',
+//     padding: 20,
+//     borderBottomWidth: 1,
+//     borderBottomColor: colors.cardBackground,
+//   },
+//   avatar: {
+//     width: 80,
+//     height: 80,
+//     borderRadius: 40,
+//     backgroundColor: colors.primary,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     marginBottom: 10,
+//   },
+//   avatarText: {
+//     fontSize: 32,
+//     fontWeight: 'bold',
+//     color: '#fff',
+//   },
+//   email: {
+//     fontSize: 16,
+//     color: colors.textSecondary,
+//   },
+//   menuSection: {
+//     padding: 20,
+//   },
+//   menuItem: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     paddingVertical: 15,
+//     borderBottomWidth: 1,
+//     borderBottomColor: colors.cardBackground,
+//   },
+//   menuText: {
+//     flex: 1,
+//     fontSize: 16,
+//     color: colors.text,
+//     marginLeft: 15,
+//   },
+//   logoutItem: {
+//     marginTop: 20,
+//     borderBottomWidth: 0,
+//   },
+//   logoutText: {
+//     flex: 1,
+//     fontSize: 16,
+//     color: '#e50914',
+//     marginLeft: 15,
+//     fontWeight: '600',
+//   },
+//   avatarImage: {
+//     width: '100%',
+//     height: '100%',
+//     borderRadius: 60,
+//   },
+// });
+
+// export default ProfileScreen;
+
+
+
+// ProfileScreen.tsx - updated with react-native-image-picker
+// ProfileScreen.tsx - using simple approach
+import React, { useEffect, useState } from 'react';
+import { 
+  View, Text, TouchableOpacity, StyleSheet, Alert, Image, 
+  ActivityIndicator, Modal, Platform 
+} from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 import { useAuth } from '../context/AuthContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { useImagePicker } from '../hooks/useImagePicker'; // Import the actual hook
 
 const ProfileScreen: React.FC = () => {
   const { colors } = useTheme();
-  const { user, signOut } = useAuth();
+  const { user, signOut, uploadProfileImage, deleteProfileImage } = useAuth();
   const navigation = useNavigation();
+  const [showImageOptions, setShowImageOptions] = useState(false);
+  const { pickImage, loading } = useImagePicker(); // Use the actual hook
 
   const defaultProfileImage = require('../assets/images/profile.png');
+
+  // In ProfileScreen - add this useEffect to debug
+useEffect(() => {
+  console.log('👤 Current user in ProfileScreen:', {
+    user: user,
+    profileImage: user?.profileImage,
+    hasProfileImage: !!user?.profileImage
+  });
+}, [user]);
 
   const handleLogout = () => {
     Alert.alert(
@@ -271,6 +466,48 @@ const ProfileScreen: React.FC = () => {
     );
   };
 
+  const showImagePickerOptions = () => {
+    setShowImageOptions(true);
+  };
+
+  const handleImageSelection = async (method: 'camera' | 'gallery') => {
+    setShowImageOptions(false);
+    
+    const imageData = await pickImage(method);
+    if (imageData) {
+      try {
+        await uploadProfileImage(imageData);
+        Alert.alert('Success', 'Profile image updated successfully!');
+      } catch (error) {
+        console.error('Upload error:', error);
+        Alert.alert('Error', 'Failed to upload profile image');
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    Alert.alert(
+      'Remove Profile Image',
+      'Are you sure you want to remove your profile image?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteProfileImage();
+              Alert.alert('Success', 'Profile image removed successfully!');
+            } catch (error) {
+              console.error('Delete error:', error);
+              Alert.alert('Error', 'Failed to remove profile image');
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const styles = createStyles(colors);
 
   return (
@@ -280,22 +517,43 @@ const ProfileScreen: React.FC = () => {
       </View>
 
       <View style={styles.profileSection}>
-        <View style={styles.avatar}>
-          {/* <Text style={styles.avatarText}>
-            {user?.email?.charAt(0).toUpperCase() || 'U'}
-          </Text> */}
-          <Image
-            source={defaultProfileImage}
-            style={styles.avatarImage}
-            resizeMode="cover"
-          />
-        </View>
+        <TouchableOpacity 
+          style={styles.avatarContainer}
+          onPress={showImagePickerOptions}
+          disabled={loading}
+        >
+          <View style={styles.avatar}>
+            {user?.profileImage ? (
+              <Image
+                source={{ uri: user.profileImage }}
+                style={styles.avatarImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <Image
+                source={defaultProfileImage}
+                style={styles.avatarImage}
+                resizeMode="cover"
+              />
+            )}
+            {loading && (
+              <View style={styles.loadingOverlay}>
+                <ActivityIndicator color="#fff" size="small" />
+              </View>
+            )}
+          </View>
+          <View style={styles.editIcon}>
+            <Icon name="camera" size={16} color="#fff" />
+          </View>
+        </TouchableOpacity>
+        
         <Text style={styles.email}>{user?.email}</Text>
+        {user?.name && <Text style={styles.name}>{user.name}</Text>}
       </View>
 
       <View style={styles.menuSection}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Subscription')}
+          onPress={() => navigation.navigate('Subscription' as never)}
           style={styles.menuItem}
         >
           <Icon name="card-outline" size={24} color={colors.text} />
@@ -303,13 +561,11 @@ const ProfileScreen: React.FC = () => {
           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
         </TouchableOpacity>
 
-
         <TouchableOpacity style={styles.menuItem}>
           <Icon name="person-outline" size={24} color={colors.text} />
           <Text style={styles.menuText}>Account Settings</Text>
           <Icon name="chevron-forward" size={20} color={colors.textMuted} />
         </TouchableOpacity>
-
 
         <TouchableOpacity style={styles.menuItem}>
           <Icon name="notifications-outline" size={24} color={colors.text} />
@@ -337,10 +593,62 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Image Picker Modal */}
+      <Modal
+        visible={showImageOptions}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowImageOptions(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Choose Profile Image</Text>
+            
+            <TouchableOpacity 
+              style={styles.modalOption}
+              onPress={() => handleImageSelection('gallery')}
+              disabled={loading}
+            >
+              <Icon name="images-outline" size={24} color={colors.text} />
+              <Text style={styles.modalOptionText}>Choose from Gallery</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.modalOption}
+              onPress={() => handleImageSelection('camera')}
+              disabled={loading}
+            >
+              <Icon name="camera-outline" size={24} color={colors.text} />
+              <Text style={styles.modalOptionText}>Take Photo</Text>
+            </TouchableOpacity>
+
+            {user?.profileImage && (
+              <TouchableOpacity 
+                style={[styles.modalOption, styles.removeOption]}
+                onPress={handleRemoveImage}
+                disabled={loading}
+              >
+                <Icon name="trash-outline" size={24} color="#e50914" />
+                <Text style={styles.removeOptionText}>Remove Current Image</Text>
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity 
+              style={styles.cancelButton}
+              onPress={() => setShowImageOptions(false)}
+              disabled={loading}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
+// Keep your existing styles (they remain the same)
 const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
@@ -362,23 +670,56 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.cardBackground,
   },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+  avatarContainer: {
+    position: 'relative',
     marginBottom: 10,
   },
-  avatarText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: colors.cardBackground,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  editIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: colors.primary,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: colors.background,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   email: {
     fontSize: 16,
     color: colors.textSecondary,
+    marginTop: 8,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+    marginTop: 4,
   },
   menuSection: {
     padding: 20,
@@ -407,10 +748,59 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginLeft: 15,
     fontWeight: '600',
   },
-  avatarImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 60,
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: colors.background,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    paddingBottom: 30,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.cardBackground,
+  },
+  modalOptionText: {
+    fontSize: 16,
+    color: colors.text,
+    marginLeft: 15,
+    flex: 1,
+  },
+  removeOption: {
+    borderBottomWidth: 0,
+    marginTop: 10,
+  },
+  removeOptionText: {
+    fontSize: 16,
+    color: '#e50914',
+    marginLeft: 15,
+    flex: 1,
+  },
+  cancelButton: {
+    backgroundColor: colors.cardBackground,
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: colors.text,
+    fontWeight: '600',
   },
 });
 

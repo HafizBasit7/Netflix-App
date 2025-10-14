@@ -76,17 +76,23 @@ const SignUpScreen: React.FC = () => {
 
     try {
       const result = await signUp({ email, password });
-      
+
       if (result.success) {
-        // User will be automatically logged in and redirected
         console.log('Registration successful');
+        // 👇 Redirect to Subscription screen after signup
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Subscription' as never }],
+        });
       } else {
         Alert.alert('Registration Failed', result.message);
       }
     } catch (error) {
-      // Error is handled by AuthContext
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
     }
   };
+  //
 
   const handleLogin = (): void => {
     navigation.navigate('Login' as never);

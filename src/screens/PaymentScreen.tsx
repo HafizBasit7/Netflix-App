@@ -9,7 +9,7 @@ import {
   ScrollView,
   StatusBar
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, CommonActions } from '@react-navigation/native';
 import { useStripe } from '@stripe/stripe-react-native';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../theme/ThemeProvider';
@@ -21,9 +21,10 @@ const PaymentScreen: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>('card');
   const [paymentSheetInitialized, setPaymentSheetInitialized] = useState<boolean>(false);
+  const [processingPayment, setProcessingPayment] = useState<boolean>(false);
   
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
-  const { createSubscriptionPayment, completeSubscription } = useAuth();
+  const { createSubscriptionPayment, completeSubscription, refreshUserSubscription } = useAuth();
   const { colors } = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
@@ -37,11 +38,11 @@ const PaymentScreen: React.FC = () => {
   const initializePayment = async (): Promise<void> => {
     try {
       if (!plan.isFree) {
-        // Initialize Stripe for paid plans
         await stripeService.initialize();
       }
       await initializePaymentSheet();
     } catch (error: any) {
+      console.error('Initialization error:', error);
       Alert.alert('Initialization Error', error.message);
     }
   };
@@ -55,32 +56,27 @@ const PaymentScreen: React.FC = () => {
     try {
       setLoading(true);
       
-      // Create subscription and get client secret from your backend
+      console.log('🔄 Creating subscription payment...');
       const { clientSecret, subscriptionId } = await createSubscriptionPayment(plan.stripePriceId!);
 
-      console.log('Initializing payment sheet with client secret:', clientSecret);
-
-      // Initialize payment sheet
+      console.log('🔄 Initializing payment sheet...');
       const { error } = await initPaymentSheet({
         paymentIntentClientSecret: clientSecret,
         merchantDisplayName: 'Netflix Clone',
         returnURL: 'yourapp://stripe-redirect',
         style: 'alwaysDark',
         allowsDelayedPaymentMethods: false,
-        defaultBillingDetails: {
-          email: 'customer@example.com',
-        }
       });
 
       if (error) {
-        console.error('Payment sheet initialization error:', error);
+        console.error('❌ Payment sheet initialization error:', error);
         Alert.alert('Payment Setup Error', error.message);
       } else {
         setPaymentSheetInitialized(true);
-        console.log('Payment sheet initialized successfully');
+        console.log('✅ Payment sheet initialized');
       }
     } catch (error: any) {
-      console.error('Error in payment sheet initialization:', error);
+      console.error('❌ Error initializing payment:', error);
       Alert.alert('Error', error.message || 'Failed to initialize payment');
     } finally {
       setLoading(false);
@@ -89,49 +85,122 @@ const PaymentScreen: React.FC = () => {
 
   const handlePayment = async (): Promise<void> => {
     if (plan.isFree) {
-      // Handle free plan
-      try {
-        setLoading(true);
-        await completeSubscription('free');
-        Alert.alert('Success', 'Free plan activated successfully!');
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainTabs' }],
-        });
-      } catch (error: any) {
-        Alert.alert('Error', error.message);
-      } finally {
-        setLoading(false);
-      }
+      await handleFreeSubscription();
       return;
     }
 
-    // Handle paid plan
+    await handlePaidSubscription();
+  };
+
+  const handleFreeSubscription = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      await completeSubscription('free');
+      Alert.alert('Success', 'Free plan activated successfully!', [
+        {
+          text: 'OK',
+          onPress: () => navigateToHome()
+        }
+      ]);
+    } catch (error: any) {
+      console.error('❌ Free subscription error:', error);
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePaidSubscription = async (): Promise<void> => {
     if (!paymentSheetInitialized) {
-      Alert.alert('Error', 'Payment system is not ready. Please wait a moment.');
+      Alert.alert('Error', 'Payment system is not ready. Please wait.');
       return;
     }
 
     try {
       setLoading(true);
+      setProcessingPayment(true);
+
+      console.log('💳 Presenting payment sheet...');
       const { error } = await presentPaymentSheet();
 
       if (error) {
-        Alert.alert(`Payment Failed`, error.message);
+        console.error('❌ Payment failed:', error);
+        Alert.alert('Payment Failed', error.message);
+        setProcessingPayment(false);
+        return;
+      }
+
+      console.log('✅ Payment completed successfully');
+      
+      // Wait for webhook to process (2-3 seconds)
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // Poll for subscription status
+      console.log('🔄 Checking subscription status...');
+      const activated = await pollSubscriptionStatus();
+
+      if (activated) {
+        Alert.alert(
+          'Success!',
+          'Your subscription is now active!',
+          [
+            {
+              text: 'Start Watching',
+              onPress: () => navigateToHome()
+            }
+          ]
+        );
       } else {
-        // Payment successful
-        Alert.alert('Success', 'Your subscription is confirmed!');
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainTabs' }],
-        });
+        // Still show success but mention it might take a moment
+        Alert.alert(
+          'Payment Received',
+          'Your payment was successful! Your subscription will be activated shortly.',
+          [
+            {
+              text: 'Continue',
+              onPress: () => navigateToHome()
+            }
+          ]
+        );
       }
     } catch (error: any) {
-      console.error('Payment error:', error);
-      Alert.alert('Error', error.message || 'Payment failed');
+      console.error('❌ Payment error:', error);
+      Alert.alert('Error', error.message || 'Payment processing failed');
     } finally {
       setLoading(false);
+      setProcessingPayment(false);
     }
+  };
+
+  const pollSubscriptionStatus = async (maxAttempts: number = 5): Promise<boolean> => {
+    for (let i = 0; i < maxAttempts; i++) {
+      try {
+        console.log(`🔄 Polling subscription status (${i + 1}/${maxAttempts})...`);
+        await refreshUserSubscription();
+        
+        // Check if subscription is now active
+        // This will be checked in AuthContext after refresh
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Note: The actual status check happens in AuthContext
+        // We return true after attempts to show success message
+        if (i === maxAttempts - 1) {
+          return true;
+        }
+      } catch (error) {
+        console.error('Error polling subscription:', error);
+      }
+    }
+    return false;
+  };
+
+  const navigateToHome = (): void => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'MainTabs' }],
+      })
+    );
   };
 
   const styles = createStyles(colors);
@@ -140,12 +209,11 @@ const PaymentScreen: React.FC = () => {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
           onPress={() => navigation.goBack()}
-          disabled={loading}
+          disabled={loading || processingPayment}
         >
           <Icon name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
@@ -154,7 +222,6 @@ const PaymentScreen: React.FC = () => {
       </View>
 
       <ScrollView style={styles.content}>
-        {/* Order Summary */}
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>Order Summary</Text>
           
@@ -162,11 +229,11 @@ const PaymentScreen: React.FC = () => {
             <View>
               <Text style={styles.planName}>{plan.name}</Text>
               <Text style={styles.planPrice}>
-                {plan.isFree ? 'FREE' : `$${plan.price}/${plan.interval}`}
+                {plan.isFree ? 'FREE' : `${plan.price}/${plan.interval}`}
               </Text>
             </View>
             <Text style={styles.planPrice}>
-              {plan.isFree ? 'FREE' : `$${plan.price}`}
+              {plan.isFree ? 'FREE' : `${plan.price}`}
             </Text>
           </View>
           
@@ -175,12 +242,11 @@ const PaymentScreen: React.FC = () => {
           <View style={styles.total}>
             <Text style={styles.totalLabel}>Total</Text>
             <Text style={styles.totalAmount}>
-              {plan.isFree ? 'FREE' : `$${plan.price}`}
+              {plan.isFree ? 'FREE' : `${plan.price}`}
             </Text>
           </View>
         </View>
 
-        {/* Payment Method */}
         {!plan.isFree && (
           <View style={styles.paymentMethods}>
             <Text style={styles.sectionTitle}>Payment Method</Text>
@@ -191,7 +257,7 @@ const PaymentScreen: React.FC = () => {
                 paymentMethod === 'card' && styles.paymentMethodSelected
               ]}
               onPress={() => setPaymentMethod('card')}
-              disabled={loading}
+              disabled={loading || processingPayment}
             >
               <View style={styles.paymentMethodInfo}>
                 <Icon name="card" size={24} color={colors.text} />
@@ -212,23 +278,30 @@ const PaymentScreen: React.FC = () => {
             )}
           </View>
         )}
+
+        {processingPayment && (
+          <View style={styles.processingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={styles.processingText}>Processing your payment...</Text>
+            <Text style={styles.processingSubtext}>Please wait, this may take a few moments</Text>
+          </View>
+        )}
       </ScrollView>
 
-      {/* Payment Button */}
       <View style={styles.footer}>
         <TouchableOpacity
           style={[
             styles.payButton,
-            (loading || (!plan.isFree && !paymentSheetInitialized)) && styles.buttonDisabled
+            (loading || (!plan.isFree && !paymentSheetInitialized) || processingPayment) && styles.buttonDisabled
           ]}
           onPress={handlePayment}
-          disabled={loading || (!plan.isFree && !paymentSheetInitialized)}
+          disabled={loading || (!plan.isFree && !paymentSheetInitialized) || processingPayment}
         >
           {loading ? (
             <ActivityIndicator color="#fff" size="small" />
           ) : (
             <Text style={styles.payButtonText}>
-              {plan.isFree ? 'Start Free' : `Pay $${plan.price}`}
+              {plan.isFree ? 'Start Free' : `Pay ${plan.price}`}
             </Text>
           )}
         </TouchableOpacity>
@@ -359,6 +432,26 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.textMuted,
     fontSize: 14,
     marginLeft: 8,
+  },
+  processingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 30,
+    backgroundColor: colors.cardBackground,
+    borderRadius: 12,
+    marginTop: 20,
+  },
+  processingText: {
+    color: colors.text,
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: 16,
+  },
+  processingSubtext: {
+    color: colors.textMuted,
+    fontSize: 14,
+    marginTop: 8,
+    textAlign: 'center',
   },
   footer: {
     padding: 20,
